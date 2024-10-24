@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { BrowserRouter as Router } from "react-router-dom";
+import { register as registerServiceWorker } from './serviceWorkerRegistration';
 
 // Ensure that the environment variables are defined
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -28,3 +29,6 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+// Register the service worker
+registerServiceWorker();

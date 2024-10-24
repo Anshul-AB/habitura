@@ -104,3 +104,9 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #556e6e;
 }
+
+.loader {
+  border-width: 4px;
+  border-radius: 50%;
+  border-top-color: transparent;
+}
