@@ -4,7 +4,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 const Footer = () => {
   return (
     <footer className="bg-darkestgreen text-white py-6">
-      <div className="container mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-3 gap-5 justify-center items-center">
+      <div className="container mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-3 gap-5 place-items-center">
         {/* Navigation Links */}
         <div className="mb-4 md:mb-0">
           <h3 className="text-lg font-semibold mb-2">Quick Links</h3>

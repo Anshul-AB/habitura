@@ -102,9 +102,13 @@ router.get(
         date: -1,
       });
 
+      // Data update through Socket.io
+      const calculatedProgress = allProgress.map((item)=>{
+        return item.progressPercentage
+      })
       const io = req.app.get("io");
-      console.log("Emitting progressUpdate event for user:", user._id);
-      io.emit("progressUpdate", { userId: user._id, allProgress });
+      console.log(" Emitting progressUpdate event for user:", user._id, calculatedProgress);
+      io.emit("progressUpdate", { userId: user._id, calculatedProgress });
 
       return res.status(200).json({
         message: "All Progress Data:",

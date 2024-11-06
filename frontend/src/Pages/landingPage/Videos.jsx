@@ -1,44 +1,62 @@
-import React from 'react'
+import React, { useRef } from "react";
+import { LazyMotion, domAnimation, m, useInView } from "framer-motion"; // Import necessary components from Framer Motion
+import YoutubeVideoCard from "../../Components/cards/YoutubeVideoCard";
+import Heading from "../../Components/common/Heading";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const Videos = () => {
+  const settings = {
+    arrows: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: false,
+    autoplaySpeed: 2000,
+    lazyLoad: 'ondemand',
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        },
+      },
+    ],
+  };
+
+  const ref = useRef(null);
+  const isInView = useInView(ref, { threshold: 3, once: true });
+
   return (
-    <div>
-      <section id="video-gallery" class="py-16 ">
-  <div class="container mx-auto px-6 text-center">
-    <h2 class="text-3xl font-bold mb-8">Video Gallery</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      {/* <!-- Video 1: Embedded YouTube Video --> */}
-      <div class="video-card bg-white p-4 rounded-lg shadow-lg">
-        <div class="video mb-4">
-          <iframe class="w-full h-48" src="https://www.youtube.com/shorts/91dBT6z6-JA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
-        <h3 class="text-lg font-semibold">Personal Progress: Week 1</h3>
-        <p class="text-gray-600">A brief overview of my first week of habit tracking.</p>
+    <section className="py-20 bg-gray-100">
+      <Heading title={"Progress Videos"} />
+      <div className="place-content-center w-full pt-5 px-homepagePadding" ref={ref}>
+        <Slider {...settings}>
+          {[...Array(3)].map((_, index) => (
+            <LazyMotion features={domAnimation} key={index}>
+              <m.div
+                initial={{ opacity: 0, y: 20 }} // Initial state: invisible and slightly below
+                animate={isInView ? { opacity: 1, y: 0 }:{}} // Final state: visible and in place
+                transition={{ duration: 0.5, delay: index * 0.2 }} // Add a delay for staggered effect
+              >
+                <YoutubeVideoCard />
+              </m.div>
+            </LazyMotion>
+          ))}
+        </Slider>
       </div>
+    </section>
+  );
+};
 
-      {/* <!-- Video 2: Embedded YouTube Video --> */}
-      <div class="video-card bg-white p-4 rounded-lg shadow-lg">
-        <div class="video mb-4">
-          <iframe class="w-full h-48" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
-        <h3 class="text-lg font-semibold">Habit Formation Tips</h3>
-        <p class="text-gray-600">Learn how to effectively build and maintain new habits.</p>
-      </div>
-
-      {/* <!-- Video 3: User-Generated Content Placeholder --> */}
-      <div class="video-card bg-white p-4 rounded-lg shadow-lg">
-        <div class="video mb-4">
-          <img class="w-full h-48 object-cover rounded" src="https://via.placeholder.com/350x200" alt="User Video Thumbnail" />
-        </div>
-        <h3 class="text-lg font-semibold">User Story: Jane's Journey</h3>
-        <p class="text-gray-600">Jane shares her inspiring story of sticking to her daily goals.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-    </div>
-  )
-}
-
-export default Videos
+export default Videos;

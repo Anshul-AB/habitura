@@ -71,6 +71,7 @@ router.put(
 
       // Clear the cache after the operation
       await redis.del(`habits:${user._id}`);
+      await redis.del(`habits:${id}`);
 
       res.status(200).json({ message: "Habit Updated", updatedHabit });
     } catch (error) {
@@ -220,6 +221,8 @@ router.post(
 
       // Clear the cache for the user's habits after the update
       await redis.del(`habits:${user._id}`);
+      await redis.del(`habits:${id}`);
+
 
       res
         .status(200)
@@ -253,6 +256,8 @@ router.post(
 
       // Clear the cache for the user's habits after the update
       await redis.del(`habits:${user._id}`);
+      await redis.del(`habits:${id}`);
+
 
       return res
         .status(200)
@@ -281,6 +286,8 @@ router.post(
 
       // Clear the cache for the user's habits after the update
       await redis.del(`habits:${user._id}`);
+      await redis.del(`habits:${id}`);
+
 
       res.status(200).json({
         message: "All habits unchecked successfully",
@@ -301,206 +308,26 @@ router.get(
     const user = req.user;
 
     try {
+      // Check if habit details are cached
+      const cachedHabitDetails = await redis.get(`habits:${habitId}`);
+      if (cachedHabitDetails) {
+        return res.status(200).json(JSON.parse(cachedHabitDetails));
+      }
+
+      // Aggregate basic habit details
       const habitDetails = await Habit.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(habitId) } },
         {
-          $match: { _id: new mongoose.Types.ObjectId(habitId) },
-        },
-        {
-          $addFields: {
+          $project: {
             formattedStartDate: {
               $dateToString: { format: "%b %d, %Y", date: "$startDate" },
             },
-
             formattedEndDate: {
               $dateToString: { format: "%b %d, %Y", date: "$endDate" },
             },
-
-            // Total days
-            totalDays: {
-              $add: [
-                {
-                  $dateDiff: {
-                    startDate: "$startDate",
-                    endDate: "$endDate",
-                    unit: "day",
-                  },
-                },
-                1,
-              ],
-            },
-
-            completedDays: { $size: "$completionDates" },
-            completedDaysStreak: "$completionDates",
-          },
-        },
-
-        // Calculate Challenge Days
-        {
-          $addFields: {
-            challengeStatus: {
-              $cond: {
-                if: { $ne: ["$endDate", null] },
-                then: {
-                  $cond: {
-                    if: { $eq: ["$totalDays", 0] },
-                    then: "Invalid date range",
-                    else: {
-                      $cond: {
-                        if: { $eq: ["$completedDays", "$totalDays"] },
-                        then: "🏆 Challenge completed",
-                        else: {
-                          $concat: [
-                            "🎯 ",
-                            { $toString: "$completedDays" },
-                            " / ",
-                            { $toString: "$totalDays" },
-                            " Days Challenge",
-                          ],
-                        },
-                      },
-                    },
-                  },
-                },
-                else: "No challenge",
-              },
-            },
-          },
-        },
-
-        // Calculate maxStreak and currentStreak in streaks
-        {
-          $addFields: {
-            streaks: {
-              $let: {
-                vars: {
-                  latestCompletedDate: { $arrayElemAt: ["$completedDaysStreak", -1] },
-                  // diff between last completed day and today
-                  dayDiff: {
-                    $dateDiff: {
-                      startDate: { $arrayElemAt: ["$completedDaysStreak", -1] },
-                      endDate: new Date(),
-                      unit: "day"
-                    }
-                  }
-                },
-                in: {
-                  $cond: {
-                    if: { $lte: ["$$dayDiff", 1] }, // If the last completion was within 1 day
-                    then: {
-                      $reduce: {
-                        input: { $sortArray: { input: "$completedDaysStreak", sortBy: 1 } },
-                        initialValue: {
-                          currentStreak: 0,
-                          maxStreak: 0,
-                          prevDate: null,
-                        },
-                        in: {
-                          $let: {
-                            vars: {
-                              dayDifference: {
-                                $cond: {
-                                  if: { $ne: ["$$value.prevDate", null] },
-                                  then: {
-                                    $dateDiff: {
-                                      startDate: "$$value.prevDate",
-                                      endDate: "$$this",
-                                      unit: "day",
-                                    },
-                                  },
-                                  else: 0,
-                                },
-                              },
-                            },
-                            in: {
-                              $cond: {
-                                if: { $eq: ["$$value.prevDate", null] },
-                                then: {
-                                  currentStreak: 1,
-                                  maxStreak: 1,
-                                  prevDate: "$$this",
-                                },
-                                else: {
-                                  $cond: {
-                                    if: { $lte: ["$$dayDifference", 1] },
-                                    then: {
-                                      currentStreak: { $add: ["$$value.currentStreak", 1] },
-                                      maxStreak: {
-                                        $max: [
-                                          "$$value.maxStreak",
-                                          { $add: ["$$value.currentStreak", 1] },
-                                        ],
-                                      },
-                                      prevDate: "$$this",
-                                    },
-                                    else: {
-                                      currentStreak: 1,
-                                      maxStreak: {
-                                        $max: [
-                                          "$$value.maxStreak",
-                                          "$$value.currentStreak",
-                                        ],
-                                      },
-                                      prevDate: "$$this",
-                                    },
-                                  },
-                                },
-                              },
-                            },
-                          },
-                        },
-                      },
-                    },
-                    else: { currentStreak: 0, maxStreak: { $max: "$streaks.maxStreak" } }, // Reset streak if the difference is > 1
-                  },
-                },
-              },
-            },
-          },
-        },
-
-        // Calculate streakStatus
-        {
-          $addFields: {
-            streakStatus: {
-              $cond: {
-                if: {
-                  $and: [
-                    { $gt: ["$streaks.currentStreak", 0] },
-                    { $ne: ["$streaks.currentStreak", null] },
-                  ],
-                },
-                then: {
-                  $cond: {
-                    if: { $eq: ["$streaks.currentStreak", 1] },
-                    then: "🔥 1 Day Streak",
-                    else: {
-                      $concat: [
-                        "🔥 ",
-                        {
-                          $toString: { $ifNull: ["$streaks.currentStreak", 0] },
-                        },
-                        " Days Streak",
-                      ],
-                    },
-                  },
-                },
-                else: null,
-              },
-              //     },
-              //   },
-            },
-          },
-        },
-
-        // Display
-        {
-          $project: {
-            streaks: 1,
-            streakStatus: 1,
-            challengeStatus: 1,
-            formattedStartDate: 1,
-            formattedEndDate: 1,
-            // completedDays: 1,
+            startDate: 1,
+            endDate: 1,
+            completionDates: 1,
           },
         },
       ]);
@@ -509,15 +336,94 @@ router.get(
         return res.status(404).json({ message: "Habit not found" });
       }
 
-      // Clear the cache for the user's habits after the update
-      await redis.del(`habits:${user._id}`);
+      // Calculate challenge status and streaks in JavaScript for flexibility and simplicity
+      const habit = habitDetails[0];
+      const today = new Date();
+      const startDate = new Date(habit.startDate);
+      const endDate = habit.endDate ? new Date(habit.endDate) : null;
+      const totalDays = endDate
+        ? Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1
+        : null;
+      const completedDays = habit.completionDates.length;
+      const isChallengeCompleted = totalDays && completedDays === totalDays;
 
-      return res.status(200).json(habitDetails[0]);
+      // Determine challenge status
+      let challengeStatus;
+      if (totalDays === null) {
+        challengeStatus = "No challenge";
+      } else if (totalDays === 0) {
+        challengeStatus = "Invalid date range";
+      } else if (isChallengeCompleted) {
+        challengeStatus = "🏆 Challenge completed";
+      } else {
+        challengeStatus = `🎯 ${completedDays} / ${totalDays} Days Challenge`;
+      }
+
+      // Calculate streaks
+      const streaks = calculateStreaks(habit.completionDates, today);
+      const streakStatus =
+        streaks.currentStreak > 1
+          ? `🔥 ${streaks.currentStreak} Days Streak`
+          : streaks.currentStreak === 1
+          ? "🔥 1 Day Streak"
+          : null;
+
+      // Format response
+      const response = {
+        formattedStartDate: habit.formattedStartDate,
+        formattedEndDate: habit.formattedEndDate,
+        challengeStatus,
+        streakStatus,
+        streaks,
+      };
+
+      // await redis.setex(`habits:${habitId}`, 3600, JSON.stringify(response));
+
+      return res.status(200).json(response);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Error fetching habit details" });
     }
   }
 );
+
+// Function to calculate streaks
+function calculateStreaks(completionDates, today) {
+  // Reset the time to midnight for all dates
+  // completionDates = completionDates.map((date) => new Date(date.setHours(0, 0, 0, 0)));
+  today = new Date(today.setHours(0, 0, 0, 0));
+  completionDates.sort((a, b) => a - b);
+
+  let maxStreak = 0,
+    currentStreak = 0;
+  let prevDate = null;
+
+  for (const date of completionDates) {
+    const dayDiff = prevDate ? (date - prevDate) / (1000 * 60 * 60 * 24) : null;
+
+    if (prevDate === null) {
+      currentStreak = 1;
+    } else if (dayDiff === 1) {
+      currentStreak++;
+    } else {
+      maxStreak = Math.max(maxStreak, currentStreak);
+      currentStreak = 1;
+    }
+
+    prevDate = date;
+  }
+
+  maxStreak = Math.max(maxStreak, currentStreak);
+
+  // Check if the streak includes today
+  const dayDiffToday = (today - prevDate) / (1000 * 60 * 60 * 24);
+  if (dayDiffToday === 1) {
+    currentStreak++;
+  } else if (dayDiffToday > 1) {
+    currentStreak = 0;
+  }
+
+  return { currentStreak, maxStreak };
+}
 
 module.exports = router;

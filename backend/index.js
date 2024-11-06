@@ -75,14 +75,3 @@ server.listen(port, () => {
   console.log("Server is Listening at port ", port);
 });
 
-io.on("connect", (socket) => {
-  console.log("New client connected with id server:", socket.id);
-    // Test emitting a message
-    socket.emit("testEvent", { message: "Hello from the server" });
-    console.log("testEvent emitted to client:", socket.id); // <-- Add this log
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected server:", socket.id);
-  });
-});
-

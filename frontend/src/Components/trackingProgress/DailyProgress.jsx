@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -29,52 +29,25 @@ const DailyProgressChart = () => {
     }
   };
 
-  // // Live update progress data
   useEffect(() => {
-    fetchProgress(); // Initial fetch
-    socket.connect();
-    console.log("Connected to the frontend");
-    // Listen for progress updates from the server
-    socket.on("progressUpdate", (data) => {
-      if (data.userId === userId) {
-        console.log(data.userId, data.allProgress, "hhhhhhh");
-        setProgressData((prevData) => [...prevData, data.allProgress]);
-      }
-    });
+    fetchProgress(); // Initial fetch only
+  }, []); // Fetch data once on mount
+
+  useEffect(() => {
+    if (userId) {
+      socket.on("progressUpdate", (data) => {
+        console.log('client connected')
+        const dataupdate = progressData
+          setProgressData((prevData) => [...prevData, ...data.calculatedProgress]);
+          console.log(dataupdate);
+        }
+  )}
     return () => {
-      socket.off("progressUpdate")
-      socket.disconnect();
+      socket.off("progressUpdate");
     };
   }, [userId]);
-
-  socket.on('connect_error', (err) => {
-    console.error('Connection error:', err);
-  });
+   // Empty dependency array ensures this runs only once on mount
   
-
-  // test socket io
-  useEffect(() => {
-    console.log("Connecting to socket...");
-    socket.connect(); 
-
-    socket.on("connect", () => {
-      console.log("Connected to the server");
-    });
-
-    socket.on("connect_error", (err) => {
-      console.log("Connection error:", err); 
-    });
-
-    socket.on("testEvent", (data) => {
-      console.log("Received test event:", data);
-    });
-
-    return () => {
-      socket.off("connect");
-      socket.off("testEvent");
-      socket.disconnect();
-    };
-  }, []);
 
   // Formatted data
   const formattedData = progressData

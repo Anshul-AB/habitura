@@ -4,7 +4,7 @@ import { useCookies } from "react-cookie";
 import { FaBars, FaTimes } from "react-icons/fa"; 
 
 const Sidebar = () => {
-  const [ removeCookie] = useCookies(["token"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]); 
   const [isSidebarOpen, setSidebarOpen] = useState(false); 
 
   const logout = () => {

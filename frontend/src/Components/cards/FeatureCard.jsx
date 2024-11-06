@@ -2,7 +2,7 @@ import React from "react";
 
 const FeatureCard = ({ icon, title, text, imgSrc, imgClassname, altText }) => {
   return (
-    <div className="feature-card p-6 bg-white shadow-lg rounded-lg h-full">
+    <div className="feature-card p-6 bg-primary bg-opacity-40 shadow-md rounded-lg h-full">
       <div className="flex items-center mb-4">
         <>{icon}</>
         <h3 className="text-xl font-semibold ml-4">{title}</h3>
