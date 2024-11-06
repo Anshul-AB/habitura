@@ -5,10 +5,10 @@ const express = require("express");
 
 const { createServer } = require("http"); // Import createServer
 const { Server } = require("socket.io"); // Import Socket.IO
+require("dotenv").config();
 const cors = require("cors");
 const path = require("path");
 const passport = require("./auth-jwt/auth-jwt.js");
-require("dotenv").config();
 require("./conn/conn.js");
 
 const authRoute = require("./routes/authRoute.js");
@@ -74,4 +74,3 @@ app.use((err, req, res, next) => {
 server.listen(port, () => {
   console.log("Server is Listening at port ", port);
 });
-

@@ -107,7 +107,7 @@ router.get(
         return item.progressPercentage
       })
       const io = req.app.get("io");
-      console.log(" Emitting progressUpdate event for user:", user._id, calculatedProgress);
+      // console.log(" Emitting progressUpdate event for user:", user._id, calculatedProgress);
       io.emit("progressUpdate", { userId: user._id, calculatedProgress });
 
       return res.status(200).json({
