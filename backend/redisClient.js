@@ -1,23 +1,22 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const Redis = require("ioredis");
 
-const redisHost = process.env.NODE_ENV === 'production' ? process.env.REDIS_HOST : 'localhost';
-const redisPort = process.env.REDIS_PORT || 6379;
+const redisUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.REDIS_URL
+    : "redis://localhost:6379";
 
 // Set up Redis connection
-const redis = new Redis({
-  host: redisHost,
-  port: redisPort,
-});
+const redis = new Redis(redisUrl);
 
 redis.on("connect", () => {
-  console.log("Connected to Redis", redisHost);
+  console.log("Connected to Redis", redisUrl);
 });
 
 redis.on("error", (err) => {
   console.error("Error connecting to Redis:", err);
-  console.log("Redis host:", redisHost);
+  console.log("Redis host:", redisUrl);
 });
 
 module.exports = redis;
