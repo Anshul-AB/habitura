@@ -4,9 +4,7 @@ const User = require("../models/userSchema");
 const Habit = require("../models/habitSchema");
 const passport = require("passport");
 const mongoose = require("mongoose");
-// const Redis = require("ioredis");
-// const redis = new Redis();
-const {redis} = require('../redisClient')
+const redis = require("../redisClient");
 
 // Create Habit
 router.post(
@@ -143,6 +141,8 @@ router.get(
       if (cachedHabits) {
         // console.log("Returning habits from Redis cache");
         return res.status(200).json(JSON.parse(cachedHabits));
+      } else {
+        console.log("No Cached habit found");
       }
 
       const user = await User.findById(userId).populate("habitList");
@@ -224,7 +224,6 @@ router.post(
       await redis.del(`habits:${user._id}`);
       await redis.del(`habits:${id}`);
 
-
       res
         .status(200)
         .json({ message: "Completion date deleted for a habit", habit });
@@ -259,7 +258,6 @@ router.post(
       await redis.del(`habits:${user._id}`);
       await redis.del(`habits:${id}`);
 
-
       return res
         .status(200)
         .json({ message: "Status updated successfully", habit });
@@ -288,7 +286,6 @@ router.post(
       // Clear the cache for the user's habits after the update
       await redis.del(`habits:${user._id}`);
       await redis.del(`habits:${id}`);
-
 
       res.status(200).json({
         message: "All habits unchecked successfully",

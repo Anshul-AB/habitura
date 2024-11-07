@@ -20,7 +20,7 @@ const updateProfileRoute = require("./routes/updateProfile.js");
 
 const app = express();
 const _dirname = path.resolve();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 5000;
 
 // Create an HTTP server and attach Socket.IO
 const server = createServer(app);
@@ -45,9 +45,11 @@ app.use(express.json());
 
 // Enable CORS
 // Apply CORS middleware
-app.use(cors({
-  origin: '*'
-}));
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 // Security Middleware
 // app.use(helmet());
@@ -58,17 +60,6 @@ app.use(cors({
 // Passport middleware
 app.use(passport.initialize());
 
-// Serve static files from the 'file-uploads' directory
-app.use("/file-uploads", express.static(path.join(__dirname, "file-uploads")));
-
-// Serve static files from the 'frontend/build' directory
-app.use(express.static(path.join(_dirname, "/frontend/build")));
-
-app.get("*", (req, res) => {
-  // Handle all other routes by sending the 'index.html' file
-  res.sendFile(path.join(_dirname, "frontend", "build", "index.html"));
-});
-
 // Routes middleware
 app.use("/auth", authRoute);
 app.use("/habit", habitRoute);
@@ -76,6 +67,16 @@ app.use("/task", taskRoute);
 app.use("/track", progressRoute);
 app.use("/myNotes", addNoteroute);
 app.use("/updateUser", updateProfileRoute);
+
+// Serve static files from the 'file-uploads' directory
+app.use("/file-uploads", express.static(path.join(__dirname, "file-uploads")));
+
+// Serve static files from the 'frontend/build' directory
+app.use(express.static(path.join(_dirname, "../frontend/build")));
+app.get("*", (req, res) => {
+  // Handle all other routes by sending the 'index.html' file
+  res.sendFile(path.join(_dirname, "../frontend", "build", "index.html"));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

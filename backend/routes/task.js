@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require("../models/userSchema");
 const passport = require("passport");
 const Task = require("../models/taskSchema");
-const {redis} = require('../redisClient')
+const redis = require('../redisClient')
 
 // Create Task
 router.post(
@@ -53,6 +53,8 @@ router.get(
       if (cachedTasks) {
         // console.log("Returning tasks from Redis cache");
         return res.status(200).json(JSON.parse(cachedTasks));
+      }else{
+        console.log("cache not found")
       }
 
       // get tasks form db
