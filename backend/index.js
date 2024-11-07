@@ -23,14 +23,18 @@ const port = process.env.PORT || 8000;
 
 // Create an HTTP server and attach Socket.IO
 const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000", // Replace with your frontend URL
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Authorization"],
-    credentials: true,
-  },
-});
+// Dynamic CORS configuration based on the environment
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === "production"
+      ? "https://habitura.onrender.com"
+      : "http://localhost:3000",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Authorization"],
+  credentials: true,
+};
+
+const io = new Server(server, { cors: corsOptions });
 
 // // Attach io to app (making it globally accessible)
 app.set("io", io);
@@ -39,7 +43,7 @@ app.set("io", io);
 app.use(express.json());
 
 // Enable CORS
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Security Middleware
 // app.use(helmet());
