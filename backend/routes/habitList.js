@@ -4,8 +4,9 @@ const User = require("../models/userSchema");
 const Habit = require("../models/habitSchema");
 const passport = require("passport");
 const mongoose = require("mongoose");
-const Redis = require("ioredis");
-const redis = new Redis();
+// const Redis = require("ioredis");
+// const redis = new Redis();
+const {redis} = require('../redisClient')
 
 // Create Habit
 router.post(

@@ -2,17 +2,13 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const Note = require("../models/addNoteSchema");
-const Redis = require("ioredis");
-const redis = new Redis();
-
-// use debounce/ throttle
 
 router.post(
   "/note",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     const user = req.user;
-    const { note } = req.body;
+    const { note } = req.body; // use debounce/ throttle
 
     if (!user) {
       return res.status(401).json({ message: "Unauthorized. Please log in." });
@@ -24,14 +20,6 @@ router.post(
         { note },
         { new: true, upsert: true }
       );
-
-      // Cache the updated note in Redis
-      // await redis.set(
-      //   `note:${userId}`,
-      //   JSON.stringify(updatedNote),
-      //   "EX",
-      //   3600
-      // );
 
       res.status(200).json({ message: "Note saved", updatedNote });
     } catch (error) {
@@ -51,26 +39,10 @@ router.get(
     }
 
     try {
-      // Check Redis cache first
-      // const cachedNote = await redis.get(`note:${user._id}`);
-      // if (cachedNote) {
-      //   return res
-      //     .status(200)
-      //     .json({ message: "My Notes", note: JSON.parse(cachedNote) });
-      // }
-
       const note = await Note.find({ user: user._id });
       if (!note) {
         return res.status(404).json({ message: "Note not found." });
       }
-
-      // Cache the retrieved notes
-      // await redis.set(
-      //   `note:${user._id}`,
-      //   JSON.stringify(notes),
-      //   "EX",
-      //   3600
-      // );
 
       res.status(200).json({ message: "My Notes", note });
     } catch (error) {

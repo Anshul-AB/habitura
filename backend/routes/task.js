@@ -3,8 +3,7 @@ const router = express.Router();
 const User = require("../models/userSchema");
 const passport = require("passport");
 const Task = require("../models/taskSchema");
-const Redis = require("ioredis");
-const redis = new Redis();
+const {redis} = require('../redisClient')
 
 // Create Task
 router.post(
