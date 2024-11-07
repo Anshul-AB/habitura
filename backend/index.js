@@ -20,7 +20,7 @@ const updateProfileRoute = require("./routes/updateProfile.js");
 
 const app = express();
 const _dirname = path.resolve();
-const port =  8000;
+const port = process.env.PORT || 8000;
 
 // Create an HTTP server and attach Socket.IO
 const server = createServer(app);
