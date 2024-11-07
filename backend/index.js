@@ -44,7 +44,10 @@ app.set("io", io);
 app.use(express.json());
 
 // Enable CORS
-app.use(cors(corsOptions));
+// Apply CORS middleware
+app.use(cors({
+  origin: '*'
+}));
 
 // Security Middleware
 // app.use(helmet());
