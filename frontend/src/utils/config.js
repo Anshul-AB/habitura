@@ -1,1 +1,1 @@
-export const backendUrl = "https://habitura.onrender.com"
+export const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
