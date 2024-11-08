@@ -19,7 +19,7 @@ const addNoteroute = require("./routes/addNote");
 const updateProfileRoute = require("./routes/updateProfile.js");
 
 const app = express();
-const _dirname = path.join(path.resolve(), ".."); 
+// const _dirname = path.join(path.resolve(), ".."); 
 const port = process.env.PORT || 8000;
 
 // Create an HTTP server and attach Socket.IO
@@ -72,11 +72,11 @@ app.use("/updateUser", updateProfileRoute);
 app.use("/file-uploads", express.static(path.join(__dirname, "file-uploads")));
 
 // Serve static files from the 'frontend/build' directory
-app.use(express.static(path.join(_dirname, "frontend/build")));
+app.use(express.static(path.join(__dirname, "frontend", "build")));
 app.get("*", (req, res) => {
-  // Handle all other routes by sending the 'index.html' file
-  res.sendFile(path.join(_dirname, "frontend", "build", "index.html"));
+  res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
 });
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -86,4 +86,6 @@ app.use((err, req, res, next) => {
 
 server.listen(port, () => {
   console.log("Server is Listening at port ", port);
+  console.log("Resolved path:", path.join(__dirname, "frontend/build"));
+
 });
