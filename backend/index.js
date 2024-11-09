@@ -20,7 +20,7 @@ const updateProfileRoute = require("./routes/updateProfile.js");
 
 const app = express();
 // const _dirname = path.join(path.resolve(), ".."); 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 5050;
 
 // Create an HTTP server and attach Socket.IO
 const server = createServer(app);
@@ -71,12 +71,12 @@ app.use("/updateUser", updateProfileRoute);
 // Serve static files from the 'file-uploads' directory
 app.use("/file-uploads", express.static(path.join(__dirname, "file-uploads")));
 
-// Serve static files from the 'frontend/build' directory
-app.use(express.static(path.join(__dirname, "frontend", "build")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
-});
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, "public")));
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -86,6 +86,4 @@ app.use((err, req, res, next) => {
 
 server.listen(port, () => {
   console.log("Server is Listening at port ", port);
-  console.log("Resolved path:", path.join(__dirname, "frontend/build"));
-
 });
