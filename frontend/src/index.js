@@ -8,15 +8,16 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 // Ensure that the environment variables are defined
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-const redirectUri = process.env.REACT_APP_REDIRECT_URI;
+
+// Conditionally set the redirect URI based on the environment
+const redirectUri = process.env.NODE_ENV === "production"
+  ? process.env.REACT_APP_REDIRECT_URI
+  : "http://localhost:3000";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <GoogleOAuthProvider
-      clientId={clientId}
-      redirectUri={redirectUri}
-    >
+    <GoogleOAuthProvider clientId={clientId} redirectUri={redirectUri}>
       <Router>
         <App />
       </Router>
