@@ -4,7 +4,7 @@ WORKDIR /app/backend
 COPY backend/package.json .
 RUN npm install
 COPY backend/ .
-EXPOSE 5050
+EXPOSE 5000
 
 # Frontend setup
 FROM node:20.11.0 as frontend
@@ -19,6 +19,6 @@ FROM node:20.11.0 as final
 WORKDIR /app
 COPY --from=backend /app/backend /app/backend
 COPY --from=frontend /app/frontend/build /app/backend/public
-ENV PORT=5050
-EXPOSE 5050
+ENV PORT=5000
+EXPOSE 5000
 CMD ["node", "backend/index.js"]
