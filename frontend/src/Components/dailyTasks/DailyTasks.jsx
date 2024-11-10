@@ -58,7 +58,7 @@ const DailyTasks = () => {
   } = useContext(HabitContext);
 
   // Draagable div
-  const handleDragEnd = async(event) => {
+  const handleDragEnd = async (event) => {
     const { active, over } = event;
     // Check if 'over' is null before accessing its properties
     if (!over) {
@@ -76,11 +76,13 @@ const DailyTasks = () => {
 
       const updatedTasks = arrayMove(listOfTasks, oldIndex, newIndex);
       setListOfTasks(updatedTasks);
-      const taskOrder = updatedTasks.map(task=>task._id)
-      console.log(oldIndex, newIndex)
+      const taskOrder = updatedTasks.map((task) => task._id);
+      console.log(oldIndex, newIndex);
 
-      const response = await makeAuthenticatedPUTRequest('/task/order',{taskOrder});
-      console.log(response)
+      const response = await makeAuthenticatedPUTRequest("/task/order", {
+        taskOrder,
+      });
+      console.log(response);
       getTasklist();
     }
   };
@@ -124,7 +126,7 @@ const DailyTasks = () => {
       <PageHeading title={" Today's Tasks"} />
 
       {/* Input tasks */}
-      <div className="flex justify-center items-center mb-4 rounded-md space-x-3 bg-gray-100 shadow-md">
+      <div className="flex flex-col md:flex-row justify-center items-center mb-4 rounded-md md:space-x-3 bg-gray-100 shadow-md">
         <InputHabit
           ref={inputRef}
           type={"text"}
@@ -132,7 +134,7 @@ const DailyTasks = () => {
           value={task}
           onChange={handleChange}
           placeholder={"Eg. Meeting with a client at 5 PM."}
-          className={"bg-gray-100 pl-5"}
+          className={"bg-gray-100 md:pl-5 p-3 md:p-0"}
           onKeyDown={handleKeyDown}
         />
 
@@ -140,9 +142,9 @@ const DailyTasks = () => {
           onClick={() => {
             isUpdating ? handleUpdateClick(updateTaskId, task) : addTask();
           }}
-          className="bg-primary h-full flex justify-center items-center text-secondary text-lg font-medium px-4 py-2 cursor-pointer hover:bg-coolsecondary hover:text-primary transition-colors duration-300 rounded-md"
+          className="bg-primary h-full w-full md:w-fit flex justify-center items-center text-secondary text-lg font-medium px-4 py-2 cursor-pointer hover:bg-coolsecondary hover:text-primary transition-colors duration-300 rounded-md"
         >
-          <IoMdAdd className="text-2xl mr-2" />
+          <IoMdAdd className="text-2xl md:mr-2" />
           {isUpdating ? "Update" : "Add"}
         </button>
       </div>

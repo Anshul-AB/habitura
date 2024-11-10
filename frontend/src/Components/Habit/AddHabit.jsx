@@ -128,7 +128,7 @@ const AddHabit = () => {
       <ToastProvider />
 
       {/* Input habit */}
-      <div className="flex justify-center items-center rounded-md space-x-3 bg-white shadow-md mb-7">
+      <div className="flex flex-col sm:flex-row justify-center items-center rounded-md sm:space-x-3 bg-white shadow-md mb-7">
         <InputHabit
           type={"text"}
           name={"habit"}
@@ -155,7 +155,7 @@ const AddHabit = () => {
 
         <button
           onClick={handleAdd}
-          className="bg-habit h-full flex justify-center items-center text-white text-lg font-medium px-4 py-2 cursor-pointer hover:bg-[#1c7082] transition-colors duration-300 rounded-md"
+          className="bg-habit h-full sm:w-fit w-full flex justify-center items-center text-white text-lg font-medium px-4 py-2 cursor-pointer hover:bg-[#1c7082] transition-colors duration-300 rounded-md"
         >
           <IoMdAdd className="text-2xl" />
           Create
