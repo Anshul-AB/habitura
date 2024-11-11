@@ -72,10 +72,10 @@ app.use("/updateUser", updateProfileRoute);
 app.use("/file-uploads", express.static(path.join(__dirname, "file-uploads")));
 
 // Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "../frontend", "build", "index.html"));
 });
 
 // Error handling middleware

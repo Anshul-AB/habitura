@@ -25,10 +25,10 @@ import MyProfile from "./Pages/routes/MyProfile";
 import Settings from "./Pages/routes/Settings";
 
 const App = () => {
-
   return (
     <div className="box-border font-primary">
       <ScrollToTop />
+
       <Routes>
         {/* landing Page */}
         <Route
@@ -96,11 +96,10 @@ const App = () => {
           element={<PrivateRoute element={<Settings />} />}
         />
       </Routes>
+
       <Footer />
     </div>
   );
 };
-
-
 
 export default App;

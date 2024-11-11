@@ -3,7 +3,7 @@ const passport = require("passport");
 const router = express.Router();
 const User = require("../models/userSchema");
 const upload = require("../multerconfig");
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 // Update profile photo 
 router.post(
@@ -100,14 +100,14 @@ router.put(
 
       // If the user is trying to change the password
       if (newPassword) {
-        const isMatch = await bcrypt.compare(currentPassword, userData.password);
+        const isMatch = await bcryptjs.compare(currentPassword, userData.password);
         if (!isMatch) {
           return res.status(401).json({ success: false, message: "Incorrect current password" });
         }
 
         // Hash the new password and update it
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        const salt = await bcryptjs.genSalt(10);
+        const hashedPassword = await bcryptjs.hash(newPassword, salt);
         userData.password = hashedPassword;
       }
 

@@ -343,11 +343,11 @@ router.get(
         ? Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1
         : null;
       const completedDays = habit.completionDates.length;
-      const isChallengeCompleted = totalDays && completedDays === totalDays;
+      const isChallengeCompleted = totalDays && completedDays >= totalDays;
 
       // Determine challenge status
       let challengeStatus;
-      if (totalDays === null) {
+      if (totalDays === null || totalDays <= 0) {
         challengeStatus = "No challenge";
       } else if (totalDays === 0) {
         challengeStatus = "Invalid date range";
