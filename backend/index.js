@@ -19,7 +19,7 @@ const addNoteroute = require("./routes/addNote");
 const updateProfileRoute = require("./routes/updateProfile.js");
 
 const app = express();
-// const _dirname = path.join(path.resolve(), ".."); 
+// const _dirname = path.join(path.resolve(), "..");
 const port = process.env.PORT || 5000;
 
 // Create an HTTP server and attach Socket.IO
@@ -28,7 +28,9 @@ const server = createServer(app);
 const corsOptions = {
   origin:
     process.env.NODE_ENV === "production"
-      ? "https://habitura.onrender.com"
+      ? process.env.RENDER_URL
+      : process.env.IS_DOCKER === "true"
+      ? process.env.DOCKER_FRONTEND_URL
       : "http://localhost:3000",
   methods: ["GET", "POST"],
   allowedHeaders: ["Authorization"],

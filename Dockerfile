@@ -20,6 +20,8 @@ WORKDIR /app
 # Copy the backend and frontend files from the previous stages
 COPY --from=backend /app/backend /app/backend
 COPY --from=frontend /app/frontend/build /app/frontend/build
+# Copy node_modules from the backend stage
+COPY --from=backend /app/backend/node_modules /app/backend/node_modules
 # Set the working directory to backend for running the server
 WORKDIR /app/backend
 ENV PORT=5000
