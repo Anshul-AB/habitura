@@ -10,7 +10,7 @@
 5. [Usage](#usage)
 6. [Screenshots](#screenshots)
 7. [API Documentation](#api-documentation)
-8. [Contributing](#contributing)
+8. [Getting Started with Docker](#getting-started-with-docker)
 9. [License](#license)
 
 ## Introduction
@@ -126,8 +126,6 @@ Habitura has a wide range of API endpoints for managing tasks and habits, such a
 - **Habits:** Manage user habits, track streaks, and check progress.
 - **Authentication:** Login and logout with Google and GitHub OAuth.
 
-Instead of listing each endpoint, you can find the detailed API documentation in the [API Docs](#).
-
 ## Caching with Redis
 
 Redis is used to cache frequently requested data such as habit lists. This reduces the load on the MongoDB server and improves the app's performance by providing faster access to cached data.
@@ -136,6 +134,32 @@ Redis is used to cache frequently requested data such as habit lists. This reduc
 - **Improved Performance:** Habit lists are cached to minimize repetitive database queries.
 - **Reduced Load:** Reduces the number of requests to the MongoDB server by serving cached data.
 - **Cache Invalidation:** Cached data is automatically refreshed when changes are made, ensuring users always see the most up-to-date information.
+
+## Getting Started with Docker
+
+You can run this habit tracking app using Docker to simplify setup. Follow the steps below:
+
+### Prerequisites
+- Make sure you have [Docker](https://www.docker.com/get-started) installed.
+
+### Instructions
+
+1. **Clone the Repository**
+```bash
+  git clone https://github.com/Anshul-AB/habitura.git
+  cd habitura
+```
+  
+2. **Build and Run Docker Containers**
+```bash
+   docker-compose up --build
+```
+3. **Access the App**
+   - Open your browser and go to `http://localhost:5000` (or the port your app is configured to run on).
+
+### Docker Hub Repository
+
+If you'd like to pull the pre-built image directly from Docker Hub, visit: [Docker Hub - anshul100/habitura](https://hub.docker.com/r/anshul100/habitura)
 
 ## License
 
