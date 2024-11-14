@@ -1,6 +1,5 @@
 # Ignore npm and Yarn log files
 npm-debug.log
-yarn-error.log
 
 # Ignore environment and configuration files
 .env

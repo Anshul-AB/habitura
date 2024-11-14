@@ -7,7 +7,6 @@ const { createServer } = require("http"); // Import createServer
 const { Server } = require("socket.io"); // Import Socket.IO
 require("dotenv").config();
 const cors = require("cors");
-const path = require("path");
 const passport = require("./auth-jwt/auth-jwt.js");
 require("./conn/conn.js");
 
@@ -17,9 +16,9 @@ const taskRoute = require("./routes/task.js");
 const progressRoute = require("./routes/progress.js");
 const addNoteroute = require("./routes/addNote");
 const updateProfileRoute = require("./routes/updateProfile.js");
+const path = require("path");
 
 const app = express();
-// const _dirname = path.join(path.resolve(), "..");
 const port = process.env.PORT || 5000;
 
 // Create an HTTP server and attach Socket.IO
@@ -73,9 +72,8 @@ app.use("/updateUser", updateProfileRoute);
 // Serve static files from the 'file-uploads' directory
 app.use("/file-uploads", express.static(path.join(__dirname, "file-uploads")));
 
-// Serve static files from the 'public' directory
+// server static files from 'public' directory
 app.use(express.static(path.join(__dirname, "../frontend/build")));
-
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend", "build", "index.html"));
 });

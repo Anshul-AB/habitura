@@ -1,0 +1,30 @@
+services:
+  app:
+    build: .
+    container_name: habitura-container
+    ports:
+      - "5000:5000"
+    networks:
+      - habitura-network
+    environment:
+      - IS_DOCKER=true
+      - DOCKER_FRONTEND_URL=http://localhost:3000
+      - DOCKER_BACKEND_URL=http://localhost:5000
+      - REDIS_CONTAINER=redis://habitura-redis:6379
+    volumes:
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
+    depends_on:
+      - redis
+    working_dir: /app/backend
+    command: [ "npm", "start" ]
+
+  redis:
+    image: redis:latest
+    container_name: habitura-redis
+    networks:
+      - habitura-network
+
+networks:
+  habitura-network:
+    driver: bridge
