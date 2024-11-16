@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import Logowomen from "../../assets/HabituraCropLogo.png";
 import { useCookies } from "react-cookie";
-import { FaBars, FaTimes } from "react-icons/fa"; 
+import { FaBars, FaTimes } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(["token"]); 
-  const [isSidebarOpen, setSidebarOpen] = useState(false); 
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const logout = () => {
     const confirm = window.confirm("Are you sure you want to logout?");
     if (confirm) {
       removeCookie("token", { path: "/" });
-      // window.location.href = "/"; 
+      // window.location.href = "/";
     } else {
       return;
     }
@@ -38,7 +39,7 @@ const Sidebar = () => {
         } lg:translate-x-0`}
       >
         {/* Logo or Brand */}
-        <a href="/">
+        <Link to="/">
           <div className="flex justify-center items-center cursor-pointer z-10 space-x-2 px-8 py-3">
             <img
               src={Logowomen}
@@ -51,51 +52,51 @@ const Sidebar = () => {
               Habitura
             </div>
           </div>
-        </a>
+        </Link>
 
         {/* Navigation Links */}
         <nav className="flex-1 px-4">
           <ul>
             <li className="py-2">
-              <a
-                href="/dashboard"
+              <Link
+                to="/dashboard"
                 className="block px-4 py-2 hover:bg-darkestgreen rounded"
               >
                 Dashboard
-              </a>
+              </Link>
             </li>
             <li className="py-2">
-              <a
-                href="/myHabits"
+              <Link
+                to="/myHabits"
                 className="block px-4 py-2 hover:bg-darkestgreen rounded"
               >
                 My Habits
-              </a>
+              </Link>
             </li>
             <li className="py-2">
-              <a
-                href="/my-profile"
+              <Link
+                to="/my-profile"
                 className="block px-4 py-2 hover:bg-darkestgreen rounded"
               >
                 My Profile
-              </a>
+              </Link>
             </li>
             <li className="py-2">
-              <a
-                href="settings"
+              <Link
+                to="/settings"
                 className="block px-4 py-2 hover:bg-darkestgreen rounded"
               >
                 Settings
-              </a>
+              </Link>
             </li>
             <li className="py-2">
-              <a
-                href="#"
+              <Link
+                to="#"
                 className="block px-4 py-2 hover:bg-darkestgreen rounded"
                 onClick={logout}
               >
                 Logout
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>
