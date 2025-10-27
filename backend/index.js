@@ -23,6 +23,7 @@ const port = process.env.PORT || 5000;
 
 // Create an HTTP server and attach Socket.IO
 const server = createServer(app);
+
 // Dynamic CORS configuration based on the environment
 const corsOptions = {
   origin:
@@ -69,6 +70,15 @@ app.use("/track", progressRoute);
 app.use("/myNotes", addNoteroute);
 app.use("/updateUser", updateProfileRoute);
 
+// socket connection
+io.on("connect", (socket) => {
+  console.log("New client attempting to connect...");
+  console.log("Socket connected:", socket.id);
+});
+io.on("connect_error", (err) => {
+  console.error("Socket.IO Connection failed:", err.message);
+});
+
 // Serve static files from the 'file-uploads' directory
 app.use("/file-uploads", express.static(path.join(__dirname, "file-uploads")));
 
@@ -84,6 +94,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal Server Error" });
 });
 
-server.listen(port, () => {
+app.listen(port, () => {
   console.log("Server is Listening at port ", port);
 });

@@ -45,9 +45,7 @@ const DailyProgressChart = () => {
     return () => {
       socket.off("progressUpdate");
     };
-  }, [userId]);
-   // Empty dependency array ensures this runs only once on mount
-  
+  }, [userId, socket]);
 
   // Formatted data
   const formattedData = progressData
