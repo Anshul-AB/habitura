@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Logowomen from "../../assets/HabituraCropLogo.png";
 import NavButton from "../../Components/buttons/NavButton";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import OutsideClickHandler from "react-outside-click-handler";
-import { makeAuthenticatedGETRequest } from "../../utils/serverHelpers";
+import { makeAuthenticatedGETRequest, makeAuthenticatedPOSTRequest } from "../../utils/serverHelpers";
 import { FaBars, FaTimes } from "react-icons/fa";
 
 const Navbar = () => {
@@ -22,6 +22,35 @@ const Navbar = () => {
   const logout = () => {
     removeCookie("token", { path: "/" });
   };
+
+    // submit form
+    const submit = async () => {
+      try {
+        console.log("Clicked.............")
+        const response = await makeAuthenticatedPOSTRequest(
+          "/auth/guestUser"
+        );
+        console.log("form data submitted", response);
+  
+        if (response && response.token) {
+          const token = response.token;
+  
+          if (token) {
+            const date = new Date();
+            date.setDate(date.getDate() + 10);
+            setCookie("token", token, { path: "/", expires: date });
+  
+            Navigate("/dashboard");
+          } else {
+            console.error("No token found in the response.");
+          }
+        } else {
+          console.error("The Form not submitted successfully");
+        }
+      } catch (error) {
+        console.error("Error during form submission:", error);
+      }
+    };
 
   // Fetch current profile data
   useEffect(() => {
@@ -131,18 +160,23 @@ const Navbar = () => {
             </OutsideClickHandler>
           </>
         ) : (
-          <>
-            <Link to="/signup">
-              <div className="font-primary text-lg text-primary bg-secondary px-3 py-2 rounded-full shadow-md transition duration-300 ease-in-out hover:scale-105">
-                Signup
-              </div>
-            </Link>
+          <div className="flex flex-col justify-start items-start mt-20">
             <Link to="/login">
-              <div className="font-primary text-lg text-secondary hover:text-darkgreen">
+              <div className="font-primary text-base text-primary bg-secondary px-3 py-2 mb-2 rounded-full shadow-md transition duration-300 ease-in-out hover:scale-105">
                 Login
               </div>
             </Link>
-          </>
+            <Link to="/signup">
+              <div className="font-primary text-base text-primary bg-secondary px-3 py-2 mb-2 rounded-full shadow-md transition duration-300 ease-in-out hover:scale-105">
+                Signup
+              </div>
+            </Link>
+            <div  onClick={submit}>
+              <div className="font-primary text-base text-primary bg-secondary px-3 py-2 rounded-full shadow-md transition duration-300 ease-in-out hover:scale-105">
+                Guest User
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </>

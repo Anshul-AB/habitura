@@ -4,8 +4,11 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const { loginLimiter, signupLimiter } = require("../middleware/rateLimiter");
+const bcrypt = require("bcryptjs/dist/bcrypt");
 const router = express.Router();
 require("dotenv").config();
+const generator = require('generate-password');
+
 
 
 // Signup route
@@ -126,5 +129,34 @@ router.post("/socialLogin", loginLimiter, async (req, res) => {
     res.status(500).json({ success: false, error: "Error saving user" });
   }
 });
+
+// Guest User login
+router.post("/guestUser", loginLimiter, async(req, res)=>{
+try{
+ let isGuest;
+ isGuest = true
+
+const password = generator.generate({
+	length: 10,
+	numbers: true
+});
+  const saltRounds = 10;
+  const hashPassword = await bcryptjs.hash(password, saltRounds)
+  const fullName = "Guest User"
+
+  const addUser = {fullName, password:hashPassword, isGuest}
+  const newUser = await User.create(addUser)
+
+  const genToken = jwt.sign({id: newUser._id}, process.env.JWT_SECRET_KEY, {expiresIn:"5d"} )
+  res.status(201).json({message:"Guest user created successfully",
+    newUser,
+    token:genToken
+  })
+  }catch(error){
+    console.error("Error in creating Guest user:", error);
+    return res.status(500).json({ error: "Internal server error", error });
+  }
+
+})
 
 module.exports = router;

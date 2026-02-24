@@ -7,13 +7,19 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
       unique: true,
+      sparse: true,
+      required: function () {
+        return !this.isGuest && this.socialLogins.length === 0;
+      },
+    },
+    isGuest: {
+      type: Boolean,
+        default: false,
     },
     password: {
       type: String,
       required: function () {
-        // Only require password if there are no social logins
         return this.socialLogins.length === 0;
       },
     },

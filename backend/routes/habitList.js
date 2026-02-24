@@ -24,6 +24,12 @@ router.post(
           .json({ message: "Unauthorized. Please log in." });
       }
 
+      if (user.isGuest && user.habitList.length >= 3) {
+        return res
+          .status(403)
+          .json({ message: "Sign in to add more habits" });
+      }
+
       const addHabit = new Habit({
         habit,
         user: user._id,
@@ -31,7 +37,6 @@ router.post(
         endDate,
       });
       await addHabit.save();
-
       user.habitList.push(addHabit);
       await user.save();
 

@@ -52,7 +52,8 @@ const AddHabit = () => {
     }
     setLoading(true);
     try {
-      await makeAuthenticatedPOSTRequest("/habit/addHabit", formData);
+      const response = await makeAuthenticatedPOSTRequest("/habit/addHabit", formData);
+      console.log(response)
       setKey("");
       setHabitData({
         habit: "",

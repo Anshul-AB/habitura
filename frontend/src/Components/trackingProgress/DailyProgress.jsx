@@ -36,16 +36,33 @@ const DailyProgressChart = () => {
   useEffect(() => {
     if (userId) {
       socket.on("progressUpdate", (data) => {
-        console.log('client connected')
-        const dataupdate = progressData
-          setProgressData((prevData) => [...prevData, ...data.calculatedProgress]);
-          console.log(dataupdate);
-        }
-  )}
+        console.log("client connected");
+        const dataupdate = progressData;
+        setProgressData((prevData) => [
+          ...prevData,
+          ...data.calculatedProgress,
+        ]);
+        console.log(dataupdate);
+      });
+    }
     return () => {
       socket.off("progressUpdate");
     };
   }, [userId, socket]);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!progressData || progressData.length === 0) {
+    return (
+      <div className="h-[150px] flex items-center justify-center bg-cyan-50 rounded-md">
+        <p className="text-sm text-gray-500 font-primary">
+          No tasks added yet. Start tracking to see your progress 📈
+        </p>
+      </div>
+    );
+  }
 
   // Formatted data
   const formattedData = progressData
@@ -58,14 +75,6 @@ const DailyProgressChart = () => {
       progress: progress.progressPercentage,
     }))
     .reverse();
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  if (!progressData || progressData.length === 0) {
-    return <div>No progress data available</div>;
-  }
 
   return (
     <>
