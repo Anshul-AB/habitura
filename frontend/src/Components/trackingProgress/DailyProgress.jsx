@@ -18,16 +18,24 @@ const DailyProgressChart = () => {
   const [userId, setUserId] = useState("");
 
   const fetchProgress = async () => {
-    try {
-      const response = await makeAuthenticatedGETRequest("/track/dailyTasks");
-      setProgressData(response.allProgress);
+  try {
+    const response = await makeAuthenticatedGETRequest("/track/dailyTasks");
+
+    setProgressData(response?.allProgress || []);
+
+    if (response?.user?._id) {
       setUserId(response.user._id);
-    } catch (error) {
-      console.error("Error fetching daily progress:", error);
-    } finally {
-      setLoading(false);
+    } else {
+      setUserId(null);
+      console.warn("No user found in response");
     }
-  };
+
+  } catch (error) {
+    console.error("Error fetching daily progress:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchProgress(); // Initial fetch only
