@@ -70,116 +70,119 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Logo */}
-      <div className="flex justify-center items-center cursor-pointer z-10 space-x-2">
-        <img
-          src={Logowomen}
-          alt="Habitura Logo"
-          height={70}
-          width={70}
-          className="rounded-full"
-        />
-        <div className="font-logo text-darkgreen font-semibold text-4xl z-10 mt-3">
-          Habitura
-        </div>
+  {/* NAVBAR WRAPPER */}
+  <div className="w-full flex justify-between items-center py-3 relative z-20">
+
+    {/* Logo */}
+    <div className="flex justify-center items-center cursor-pointer space-x-2">
+      <img
+        src={Logowomen}
+        alt="Habitura Logo"
+        className="rounded-full h-12 w-12 sm:h-14 sm:w-14"
+      />
+      <div className="font-logo text-darkgreen font-semibold text-2xl sm:text-3xl lg:text-4xl">
+        Habitura
       </div>
+    </div>
 
-      {/* Navbar menu */}
+    {/* Desktop nav links */}
+    <div className="hidden lg:flex space-x-6 justify-center items-center">
+      <NavButton buttonLabel={"Home"} target={"home"} />
+      <NavButton buttonLabel={"About Us"} target={"aboutus"} />
+      <NavButton buttonLabel={"Features"} target={"features"} />
+      <NavButton buttonLabel={"How It works"} target={"howitworks"} />
+      <NavButton buttonLabel={"Success Stories"} target={"testimonials"} />
+      <NavButton buttonLabel={"Personal Progress"} target={"videos"} />
+      <NavButton buttonLabel={"Subscription"} target={"subscription"} />
+      <NavButton buttonLabel={"FAQs"} target={"faqs"} />
+    </div>
 
-      {/* nav links for small screens */}
-      <div className="relative max-lg:hidden p-4 z-10 w-full flex justify-end">
+    {/* Right side (auth + mobile menu) */}
+    <div className="flex items-center space-x-3">
+
+      {/* Mobile menu button */}
+      <div className="lg:hidden">
         <button onClick={toggleNavbar} className="text-darkgreen">
           {isNavbarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
         </button>
-        {isNavbarOpen && (
-          <div className="flex flex-col justify-start items-start space-y-4 p-4 absolute top-16 right-0 bg-coolsecondary bg-opacity-50 rounded-lg shadow-lg font-medium text-white w-48 z-20">
-            <NavButton buttonLabel={"Home"} target={"home"} />
-            <NavButton buttonLabel={"About Us"} target={"aboutus"} />
-            <NavButton buttonLabel={"Features"} target={"features"} />
-            <NavButton buttonLabel={"How It works"} target={"howitworks"} />
-            <NavButton
-              buttonLabel={"Success Stories"}
-              target={"testimonials"}
+      </div>
+
+      {/* Profile / Auth */}
+      {cookie.token ? (
+        <OutsideClickHandler
+          onOutsideClick={(e) => {
+            setShowMenu(false);
+            e.stopPropagation();
+          }}
+        >
+          <div className="relative" onClick={toggleMenu}>
+            <img
+              src={profilePicture}
+              alt="Profile"
+              className="rounded-full h-10 w-10 sm:h-12 sm:w-12 cursor-pointer"
             />
-            <NavButton buttonLabel={"Personal Progress"} target={"videos"} />
-            <NavButton buttonLabel={"Subscription"} target={"subscription"} />
-            <NavButton buttonLabel={"FAQs"} target={"faqs"} />
+
+            {showMenu && (
+              <div className="absolute top-14 right-0 flex flex-col bg-coolsecondary bg-opacity-90 rounded-lg shadow-lg font-medium text-white w-48">
+                <Link to="/my-profile">
+                  <button className="p-3 w-full text-left hover:bg-gray-300 hover:text-coolsecondary rounded-t-lg">
+                    My Profile
+                  </button>
+                </Link>
+                <button
+                  className="p-3 w-full bg-red-400 hover:bg-red-600 text-left rounded-b-lg"
+                  onClick={logout}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-
-      {/* nav links for larger screens */}
-      <div
-        className={`hidden  space-x-6 max-lg:flex justify-center items-center z-10 `}
-      >
-        <NavButton buttonLabel={"Home"} target={"home"} />
-        <NavButton buttonLabel={"About Us"} target={"aboutus"} />
-        <NavButton buttonLabel={"Features"} target={"features"} />
-        <NavButton buttonLabel={"How It works"} target={"howitworks"} />
-        <NavButton buttonLabel={"Success Stories"} target={"testimonials"} />
-        <NavButton buttonLabel={"Personal Progress"} target={"videos"} />
-        <NavButton buttonLabel={"Subscription"} target={"subscription"} />
-        <NavButton buttonLabel={"FAQs"} target={"faqs"} />
-      </div>
-
-      {/* logins */}
-      <div className="flex items-center cursor-pointer z-10">
-        {cookie.token ? (
-          <>
-            {/* Profile */}
-            <OutsideClickHandler
-              onOutsideClick={(e) => {
-                setShowMenu(false);
-                e.stopPropagation();
-              }}
-            >
-              <div className="relative" onClick={toggleMenu}>
-                <img
-                  src={profilePicture}
-                  alt="Profile"
-                  className="rounded-full h-12 lg:w-12 w-16"
-                />
-
-                {/* Profile Menu */}
-                {showMenu && (
-                  <div className="absolute top-16 right-0 flex flex-col bg-coolsecondary bg-opacity-90 rounded-lg shadow-lg font-medium text-white w-48">
-                    <Link to="/my-profile">
-                      <button className="p-3 w-full text-left hover:bg-gray-300 hover:text-coolsecondary transition-colors duration-300 rounded-t-lg">
-                        My Profile
-                      </button>
-                    </Link>
-                    <button
-                      className="p-3 w-full bg-red-400 hover:bg-red-600 text-left transition-colors duration-300 rounded-b-lg"
-                      onClick={logout}
-                    >
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            </OutsideClickHandler>
-          </>
-        ) : (
-          <div className="flex flex-col justify-start items-start mt-20">
-            <Link to="/login">
-              <div className="font-primary text-base text-primary bg-secondary px-3 py-2 mb-2 rounded-full shadow-md transition duration-300 ease-in-out hover:scale-105">
-                Login
-              </div>
-            </Link>
-            <Link to="/signup">
-              <div className="font-primary text-base text-primary bg-secondary px-3 py-2 mb-2 rounded-full shadow-md transition duration-300 ease-in-out hover:scale-105">
-                Signup
-              </div>
-            </Link>
-            <div  onClick={submit}>
-              <div className="font-primary text-base text-primary bg-secondary px-3 py-2 rounded-full shadow-md transition duration-300 ease-in-out hover:scale-105">
-                Guest User
-              </div>
+        </OutsideClickHandler>
+      ) : (
+        <div className="hidden sm:flex items-center gap-2">
+          <Link to="/login">
+            <div className="font-primary text-sm bg-secondary px-3 py-2 rounded-full shadow-md hover:scale-105 transition">
+              Login
+            </div>
+          </Link>
+          <Link to="/signup">
+            <div className="font-primary text-sm bg-secondary px-3 py-2 rounded-full shadow-md hover:scale-105 transition">
+              Signup
+            </div>
+          </Link>
+          <div onClick={submit}>
+            <div className="font-primary text-sm bg-secondary px-3 py-2 rounded-full shadow-md hover:scale-105 transition cursor-pointer">
+              Guest
             </div>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* Mobile dropdown menu */}
+  {isNavbarOpen && (
+    <div className="lg:hidden absolute top-20 right-36 z-50 flex flex-col space-y-3 p-4 bg-coolsecondary bg-opacity-90 text-white shadow-lg">
+      <NavButton buttonLabel={"Home"} target={"home"} />
+      <NavButton buttonLabel={"About Us"} target={"aboutus"} />
+      <NavButton buttonLabel={"Features"} target={"features"} />
+      <NavButton buttonLabel={"How It works"} target={"howitworks"} />
+      <NavButton buttonLabel={"Success Stories"} target={"testimonials"} />
+      <NavButton buttonLabel={"Personal Progress"} target={"videos"} />
+      <NavButton buttonLabel={"Subscription"} target={"subscription"} />
+      <NavButton buttonLabel={"FAQs"} target={"faqs"} />
+
+      {!cookie.token && (
+        <div className="flex flex-col gap-2 pt-2 sm:hidden">
+          <Link to="/login">Login</Link>
+          <Link to="/signup">Signup</Link>
+          <div onClick={submit}>Guest User</div>
+        </div>
+      )}
+    </div>
+  )}
+</>
   );
 };
 

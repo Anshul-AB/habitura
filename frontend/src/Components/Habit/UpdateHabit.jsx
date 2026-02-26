@@ -63,66 +63,74 @@ const UpdateHabit = ({ habitDetails, isPopUp, setIsPopUp, getMyHabits }) => {
 
   return (
     <>
-      <OutsideClickHandler
-        onOutsideClick={(e) => {
-          setIsPopUp(false);
-          e.stopPropagation();
-        }}
-      >
-        <ToastProvider />
-        <div
-          className={`fixed top-[50%] left-[55%] w-[60%] h-[70%] flex justify-center items-center bg-darkestgreen bg-opacity-50 z-50 transform -translate-x-1/2 -translate-y-1/2 shadow-md rounded-sm ${
-            isPopUp ? "block" : "hidden"
-          } `}
-        >
-          <RxCross1
-            className="absolute top-1 right-1 cursor-pointer font-thin text-5xl text-red-500"
-            onClick={() => setIsPopUp(false)}
-          />
-          <div className="h-3/4 w-3/4 bg-[#ebc1c1] rounded-md shadow-md p-5 space-y-4">
-            {/* Title */}
-            <div className=" text-3xl font-normal text-darkgreen">
-              Update My Habit
-            </div>
+  <OutsideClickHandler
+    onOutsideClick={(e) => {
+      setIsPopUp(false);
+      e.stopPropagation();
+    }}
+  >
+    <ToastProvider />
 
-            {/* Update Habit Input */}
-            <div className="flex justify-center items-center rounded-md space-x-3 bg-white drop-shadow-lg px-1">
-              <InputHabit
-                type={"text"}
-                name={"habit"}
-                value={habitData.habit}
-                onChange={handleChange}
-                placeholder={"Eg. Wake Up at 5 AM."}
-                onKeyDown={handleKeyDown}
-                className="p-3"
-              />
+    <div
+      className={`fixed inset-0 flex justify-center items-center bg-darkestgreen bg-opacity-50 z-50 px-4 ${
+        isPopUp ? "block" : "hidden"
+      }`}
+    >
+      {/* modal */}
+      <div className="relative w-full max-w-4xl max-h-[90vh] bg-[#ebc1c1] rounded-md shadow-md p-4 sm:p-6 md:p-8 overflow-y-auto">
 
-              <Datepicker
-                selectedDate={habitData.startDate}
-                onChange={(date) => handleDateChange(date, "startDate")}
-                dateLabel="Start Date"
-              />
+        {/* close button */}
+        <RxCross1
+          className="absolute top-3 right-3 cursor-pointer text-3xl sm:text-4xl text-red-500"
+          onClick={() => setIsPopUp(false)}
+        />
 
-              <Datepicker
-                selectedDate={habitData.endDate}
-                onChange={(date) => handleDateChange(date, "endDate")}
-                dateLabel="End Date"
-              />
-            </div>
-
-            {/* button */}
-            <button
-              className="bg-habit flex justify-center items-center text-white text-lg font-medium px-4 py-2 cursor-pointer hover:bg-[#1c7082] transition-colors duration-300 rounded-md"
-              onClick={updateHabit}
-            >
-              <GrDocumentUpdate className="text-2xl mr-2" />
-              Update
-            </button>
-
-          </div>
+        {/* Title */}
+        <div className="text-xl sm:text-2xl md:text-3xl font-normal text-darkgreen mb-4">
+          Update My Habit
         </div>
-      </OutsideClickHandler>
-    </>
+
+        {/* Inputs */}
+        <div className="flex flex-col md:flex-row gap-3 rounded-md bg-white drop-shadow-lg p-3">
+
+          <InputHabit
+            type={"text"}
+            name={"habit"}
+            value={habitData.habit}
+            onChange={handleChange}
+            placeholder={"Eg. Wake Up at 5 AM."}
+            onKeyDown={handleKeyDown}
+            className="p-3 w-full"
+          />
+
+          <Datepicker
+            selectedDate={habitData.startDate}
+            onChange={(date) => handleDateChange(date, "startDate")}
+            dateLabel="Start Date"
+          />
+
+          <Datepicker
+            selectedDate={habitData.endDate}
+            onChange={(date) => handleDateChange(date, "endDate")}
+            dateLabel="End Date"
+          />
+        </div>
+
+        {/* button */}
+        <div className="mt-5">
+          <button
+            className="bg-habit flex justify-center items-center text-white text-base sm:text-lg font-medium px-4 py-2 cursor-pointer hover:bg-[#1c7082] transition-colors duration-300 rounded-md w-full sm:w-auto"
+            onClick={updateHabit}
+          >
+            <GrDocumentUpdate className="text-xl sm:text-2xl mr-2" />
+            Update
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </OutsideClickHandler>
+</>
   );
 };
 

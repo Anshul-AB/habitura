@@ -142,14 +142,16 @@ const password = generator.generate({
 });
   const saltRounds = 10;
   const hashPassword = await bcryptjs.hash(password, saltRounds)
-  const fullName = "Guest User"
+  const fullName = "Guest acc"
 
   const addUser = {fullName, password:hashPassword, isGuest}
+  delete addUser.email;
   const newUser = await User.create(addUser)
 
   const genToken = jwt.sign({id: newUser._id}, process.env.JWT_SECRET_KEY, {expiresIn:"5d"} )
   res.status(201).json({message:"Guest user created successfully",
     newUser,
+    id:newUser._id,
     token:genToken
   })
   }catch(error){
