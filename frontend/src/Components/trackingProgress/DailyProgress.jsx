@@ -16,6 +16,7 @@ const DailyProgressChart = () => {
   const [progressData, setProgressData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState("");
+  const [range, setRange] = useState(30); // default = 30 days
 
   const fetchProgress = async () => {
   try {
@@ -46,10 +47,9 @@ const DailyProgressChart = () => {
       socket.on("progressUpdate", (data) => {
         console.log("client connected");
         const dataupdate = progressData;
-        setProgressData((prevData) => [
-          ...prevData,
-          ...data.calculatedProgress,
-        ]);
+        if (Array.isArray(data.calculatedProgress)) {
+  setProgressData(data.calculatedProgress);
+}
         console.log(dataupdate);
       });
     }
@@ -84,6 +84,8 @@ const DailyProgressChart = () => {
     }))
     .reverse();
 
+    const filteredData = formattedData.slice(-range);
+
   return (
     <>
       {/* Heading */}
@@ -94,42 +96,40 @@ const DailyProgressChart = () => {
       {/* chart */}
       <div className="h-[150px] w-full max-w-screen-lg bg-cyan-50">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={formattedData}>
-            {" "}
-            <Line
-              type="monotone"
-              dataKey="progress"
-              stroke="#0891B2"
-              strokeWidth={2}
-              dot={{ stroke: "#0891B2", strokeWidth: 1, r: 2 }}
-            />
-            <CartesianGrid stroke="#e0e0e0" strokeDasharray="3 3" />
-            <XAxis
-              dataKey="date"
-              tick={{ fill: "#9e9e9e", fontSize: 9 }}
-              label={{
-                value: " ⟶ ",
-                position: "insideBottom",
-                offset: -9,
-                fill: "#0891B2",
-                fontSize: 35,
-              }}
-            />
-            <YAxis
-              ticks={[0, 25, 50, 75, 100]}
-              tick={{ fill: "#9e9e9e", fontSize: 9 }}
-            />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#f5f5f5",
-                border: "1px solid #e0e0e0",
-              }}
-              labelStyle={{ color: "#333" }}
-              itemStyle={{ color: "#0891B2" }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+  <LineChart data={filteredData}>
+    <Line
+      type="monotone"
+      dataKey="progress"
+      stroke="#0891B2"
+      strokeWidth={2}
+      animationDuration={400}
+      dot={{ stroke: "#0891B2", strokeWidth: 1, r: 2 }}
+    />
+    <CartesianGrid stroke="#e0e0e0" strokeDasharray="3 3" />
+    <XAxis dataKey="date" />
+    <YAxis ticks={[0, 25, 50, 75, 100]} />
+    <Tooltip />
+  </LineChart>
+</ResponsiveContainer>
       </div>
+
+      <div className="flex gap-2 mb-2 justify-center">
+  {[7, 30, 90, 365].map((days) => (
+    <button
+      key={days}
+      onClick={() => setRange(days)}
+      className={`px-2 py-1 text-xs rounded-md ${
+        range === days
+          ? "bg-cyan-600 text-white"
+          : "bg-cyan-100 text-cyan-700"
+      }`}
+    >
+      {days === 365 ? "All" : `${days} Days`}
+    </button>
+  ))}
+</div>
+
+
     </>
   );
 };
