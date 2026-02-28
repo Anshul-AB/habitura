@@ -55,7 +55,7 @@ const MyNote = () => {
 
   return (
     <div className="relative h-full text-sm overflow-y-auto custom-scrollbar">
-      {loading && <LoadingSpinner />}
+      {/* {loading && <LoadingSpinner />} */}
       <TextareaInput handleChange={handleChange} value={myNote} />
     </div>
   );

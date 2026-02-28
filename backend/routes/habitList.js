@@ -419,12 +419,15 @@ function calculateStreaks(completionDates, today) {
   maxStreak = Math.max(maxStreak, currentStreak);
 
   // Check if the streak includes today
-  const dayDiffToday = (today - prevDate) / (1000 * 60 * 60 * 24);
-  if (dayDiffToday === 1) {
-    currentStreak++;
-  } else if (dayDiffToday > 1) {
-    currentStreak = 0;
-  }
+  // const dayDiffToday = (today - prevDate) / (1000 * 60 * 60 * 24);
+  // if (dayDiffToday === 1) {
+  //   currentStreak++;
+  // } else if (dayDiffToday > 1) {
+  //   currentStreak = 0;
+  // }
+
+  // maxStreak = Math.max(maxStreak, currentStreak);
+// return currentStreak;
 
   return { currentStreak, maxStreak };
 }

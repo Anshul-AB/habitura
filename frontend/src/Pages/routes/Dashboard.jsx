@@ -14,7 +14,7 @@ const Dashboard = () => {
 
       <div className=" w-full grid grid-cols-1 md:grid-cols-2 gap-3 max-h-full bg-primary bg-opacity-50 p-pagePadding">
         {/* Habit Section - left */}
-        <div className="flex-1 bg-white p-5 shadow-md rounded-md overflow-y-auto custom-scrollbar">
+        <div className="min-h-0 bg-white p-5 shadow-md rounded-md overflow-y-auto custom-scrollbar">
           <HabitProvider>
             <TaskProvider>
               <Suspense fallback={<LoadingSpinner/>}>
@@ -25,14 +25,14 @@ const Dashboard = () => {
         </div>
 
         {/* Stats - right */}
-        <div className="grid grid-rows-3 gap-3">
+        <div className="grid grid-rows-3 gap-3 min-h-0">
           {/* Bar graph daily status */}
           <div className="bg-cyan-50 max-h-full rounded-md shadow-md p-2">
             <DailyProgress />
           </div>
 
           {/* My notes */}
-          <div className="row-span-2 max-h-full rounded-md shadow-md z-0">
+          <div className="row-span-2 max-h-full rounded-md shadow-md z-0 min-h-0">
             <MyNote />
           </div>
         </div>
