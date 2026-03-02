@@ -391,22 +391,65 @@ router.get(
 );
 
 // Function to calculate streaks
-function calculateStreaks(completionDates, today) {
-  // Reset the time to midnight for all dates
-  // completionDates = completionDates.map((date) => new Date(date.setHours(0, 0, 0, 0)));
-  today = new Date(today.setHours(0, 0, 0, 0));
-  completionDates.sort((a, b) => a - b);
+// function calculateStreaks(completionDates, today) {
+//   // Reset the time to midnight for all dates
+//   // completionDates = completionDates.map((date) => new Date(date.setHours(0, 0, 0, 0)));
+//   today = new Date(today.setHours(0, 0, 0, 0));
+//   completionDates.sort((a, b) => a - b);
 
-  let maxStreak = 0,
-    currentStreak = 0;
+//   let maxStreak = 0,
+//     currentStreak = 0;
+//   let prevDate = null;
+
+//   for (const date of completionDates) {
+//     const dayDiff = prevDate ? (date - prevDate) / (1000 * 60 * 60 * 24) : null;
+
+//     if (prevDate === null) {
+//       currentStreak = 1;
+//     } else if (dayDiff === 1) {
+//       currentStreak++;
+//     } else {
+//       maxStreak = Math.max(maxStreak, currentStreak);
+//       currentStreak = 1;
+//     }
+
+//     prevDate = date;
+//   }
+
+//   maxStreak = Math.max(maxStreak, currentStreak);
+
+//   // Check if the streak includes today
+//   // const dayDiffToday = (today - prevDate) / (1000 * 60 * 60 * 24);
+//   // if (dayDiffToday === 1) {
+//   //   currentStreak++;
+//   // } else if (dayDiffToday > 1) {
+//   //   currentStreak = 0;
+//   // }
+
+//   // maxStreak = Math.max(maxStreak, currentStreak);
+// // return currentStreak;
+
+//   return { currentStreak, maxStreak };
+// }
+
+function calculateStreaks(completionDates, today) {
+  today = new Date(today.setHours(0, 0, 0, 0));
+
+  completionDates = completionDates
+    .map(d => new Date(d.setHours(0, 0, 0, 0)))
+    .sort((a, b) => a - b);
+
+  let maxStreak = 0;
+  let currentStreak = 0;
   let prevDate = null;
 
   for (const date of completionDates) {
-    const dayDiff = prevDate ? (date - prevDate) / (1000 * 60 * 60 * 24) : null;
+    const diff =
+      prevDate ? (date - prevDate) / (1000 * 60 * 60 * 24) : null;
 
     if (prevDate === null) {
       currentStreak = 1;
-    } else if (dayDiff === 1) {
+    } else if (diff === 1) {
       currentStreak++;
     } else {
       maxStreak = Math.max(maxStreak, currentStreak);
@@ -418,16 +461,15 @@ function calculateStreaks(completionDates, today) {
 
   maxStreak = Math.max(maxStreak, currentStreak);
 
-  // Check if the streak includes today
-  // const dayDiffToday = (today - prevDate) / (1000 * 60 * 60 * 24);
-  // if (dayDiffToday === 1) {
-  //   currentStreak++;
-  // } else if (dayDiffToday > 1) {
-  //   currentStreak = 0;
-  // }
+  // ⭐ IMPORTANT PART
+  const lastDate = completionDates[completionDates.length - 1];
+  const diffFromToday =
+    (today - lastDate) / (1000 * 60 * 60 * 24);
 
-  // maxStreak = Math.max(maxStreak, currentStreak);
-// return currentStreak;
+  // If today isn't completed, streak stops at yesterday
+  if (diffFromToday > 0) {
+    // DO NOTHING — no fake +1
+  }
 
   return { currentStreak, maxStreak };
 }
